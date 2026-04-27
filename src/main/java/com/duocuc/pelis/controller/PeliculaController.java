@@ -17,10 +17,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 
 @RestController
-@RequestMapping("/peliculas")
+    @RequestMapping("/peliculas")
 @CrossOrigin(origins = "*")
 public class PeliculaController {
     @Autowired
@@ -32,9 +36,15 @@ public class PeliculaController {
     }
 
     @GetMapping("/{id}")
-        public Optional<Pelicula> getPeliculaById(@PathVariable Long id){
-            return peliculasService.getPeliculaById(id);
-        }
+    public EntityModel<Pelicula> getPeliculaById(@PathVariable Long id) {
+        Pelicula pelicula = peliculasService.getPeliculaById(id)
+                .orElseThrow(() -> new RuntimeException("Pelicula no encontrada"));
+
+        return EntityModel.of(pelicula,
+                linkTo(methodOn(PeliculaController.class).getPeliculaById(id)).withSelfRel(),
+                linkTo(methodOn(PeliculaController.class).getAllPeliculas()).withRel("lista-peliculas"));
+    }
+
     @PostMapping
     public Pelicula createPelicula(@RequestBody Pelicula pelicula){
         return peliculasService.createPelicula(pelicula);
