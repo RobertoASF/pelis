@@ -1,5 +1,6 @@
 package com.duocuc.pelis.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,10 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.CollectionModel;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 
 
 @RestController
@@ -36,17 +34,12 @@ public class PeliculaController {
     }
 
     @GetMapping("/{id}")
-    public EntityModel<Pelicula> getPeliculaById(@PathVariable Long id) {
-        Pelicula pelicula = peliculasService.getPeliculaById(id)
-                .orElseThrow(() -> new RuntimeException("Pelicula no encontrada"));
-
-        return EntityModel.of(pelicula,
-                linkTo(methodOn(PeliculaController.class).getPeliculaById(id)).withSelfRel(),
-                linkTo(methodOn(PeliculaController.class).getAllPeliculas()).withRel("lista-peliculas"));
+    public Optional<Pelicula> getPeliculaById(@PathVariable Long id){
+        return peliculasService.getPeliculaById(id);
     }
 
     @PostMapping
-    public Pelicula createPelicula(@RequestBody Pelicula pelicula){
+    public Pelicula createPelicula(@RequestBody @Valid Pelicula pelicula){
         return peliculasService.createPelicula(pelicula);
     }
 
