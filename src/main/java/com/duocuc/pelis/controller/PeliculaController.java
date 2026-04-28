@@ -34,8 +34,9 @@ public class PeliculaController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Pelicula> getPeliculaById(@PathVariable Long id){
-        return peliculasService.getPeliculaById(id);
+    public Pelicula getPeliculaById(@PathVariable Long id) {
+        return peliculasService.getPeliculaById(id)
+                .orElseThrow(() -> new RuntimeException("Pelicula no encontrada"));
     }
 
     @PostMapping

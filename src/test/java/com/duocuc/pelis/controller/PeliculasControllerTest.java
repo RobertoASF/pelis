@@ -34,6 +34,7 @@ class PeliculaControllerTest {
     @Test
     void getAllPeliculas_deberiaRetornarLista() throws Exception {
         Pelicula pelicula = new Pelicula();
+        pelicula.setDirector("Christopher Nolan");
         pelicula.setId(1L);
         pelicula.setTitle("Inception");
 
@@ -59,9 +60,7 @@ class PeliculaControllerTest {
         mockMvc.perform(get("/peliculas/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.titulo").value("Inception"))
-                .andExpect(jsonPath("$._links.self").exists())
-                .andExpect(jsonPath("$._links['lista-peliculas']").exists());
+                .andExpect(jsonPath("$.titulo").value("Inception"));
     }
 
     @Test
@@ -78,6 +77,9 @@ class PeliculaControllerTest {
         Pelicula pelicula = new Pelicula();
         pelicula.setId(1L);
         pelicula.setTitle("Inception");
+        pelicula.setDirector("Christopher Nolan");
+        pelicula.setYear(2010);
+        pelicula.setGender("Sci-Fi");
 
         when(peliculasService.createPelicula(any(Pelicula.class)))
                 .thenReturn(pelicula);

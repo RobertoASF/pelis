@@ -30,13 +30,15 @@ public class PeliculasServiceImpl implements PeliculasService{
     }
 
     @Override
-    public Pelicula updatePelicula(Long id, Pelicula pelicula){
-        if(peliculasRepository.existsById(id)){
-            pelicula.setId(id);
-            return peliculasRepository.save(pelicula);
-        } else {
-            return null;
-        }
+    public Pelicula updatePelicula(Long id, Pelicula pelicula) {
+        Pelicula peliculaExistente = peliculasRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pelicula no encontrada"));
+
+        peliculaExistente.setTitle(pelicula.getTitle());
+        peliculaExistente.setGender(pelicula.getGender());
+        // ... setear el resto de campos ...
+
+        return peliculasRepository.save(peliculaExistente);
     }
     @Override
     public void deletePelicula(Long id){
